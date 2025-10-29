@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Legal Agent – Verträge automatisch prüfen</title>
+  <meta name="description" content="KI-gestützte Vertragsprüfung: Risiken erkennen, Zusammenfassungen erstellen, schneller entscheiden." />
+
+  <!-- Plausible (ersetzen: yourdomain.com) -->
+  <script defer data-domain="yourdomain.com" src="https://plausible.io/js/script.js"></script>
+
+  <style>
+    :root { --bg:#0b1020; --card:#121833; --text:#e8ecff; --muted:#a6b0d9; --acc:#6ea8ff; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; color:var(--text); background:radial-gradient(1200px 600px at 20% -10%, #1a2558 0, transparent 60%), var(--bg); }
+    header { padding:48px 20px 16px; text-align:center; }
+    .badge { display:inline-block; padding:6px 10px; border:1px solid #2b356b; border-radius:999px; color:#cdd6ff; font-size:13px; }
+    h1 { margin:14px auto 10px; font-size: clamp(28px, 4vw, 44px); line-height:1.1; max-width: 900px; }
+    p.lead { margin:0 auto; max-width: 760px; color:var(--muted); font-size: clamp(16px, 2vw, 18px); }
+    main { max-width: 980px; margin: 28px auto 64px; padding: 0 20px; display:grid; gap:20px; grid-template-columns: 1fr; }
+    @media(min-width: 980px){ main{ grid-template-columns: 1.2fr .8fr; } }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid #24306a; border-radius:18px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+    .card.pad { padding:22px; }
+    ul.features { list-style:none; padding:0; margin:0; display:grid; gap:10px; }
+    ul.features li { display:flex; gap:10px; align-items:flex-start; background:#0e1531; border:1px solid #23306a; border-radius:12px; padding:12px 14px; color:#d8defb; }
+    .dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--acc); margin-top:6px; flex:0 0 10px; }
+    form { display:grid; gap:12px; }
+    label { font-size:14px; color:#c9d3ff; }
+    input, textarea, select { width:100%; background:#0e1531; color:#e8ecff; border:1px solid #2a376f; border-radius:12px; padding:12px 14px; outline:none; }
+    textarea { min-height:110px; resize:vertical; }
+    .row { display:grid; gap:12px; grid-template-columns:1fr; }
+    @media(min-width:600px){ .row{ grid-template-columns:1fr 1fr; } }
+    .btn { appearance:none; border:none; background:linear-gradient(180deg, #6ea8ff, #5d8cf0); color:#0b1020; font-weight:700; padding:13px 16px; border-radius:12px; cursor:pointer; }
+    .btn:disabled { opacity:.6; cursor:not-allowed; }
+    .muted { color:var(--muted); font-size:13px; }
+    .ok { color:#79ffa7; }
+    .err { color:#ff8a8a; }
+    footer { padding:28px 20px 80px; text-align:center; color:#9fb0ff; font-size:14px; }
+    a { color:#a7c8ff; }
+    .consent { margin-top:8px; display:flex; gap:8px; align-items:flex-start; font-size:13px; color:#cbd5ff; }
+    .consent input { width:auto; }
+    .tagline { display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background:#0f1533; border:1px solid #28356e; color:#c9d3ff; }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="badge">EARLY ACCESS</span>
+    <h1>Legal Agent für <em>schnelle</em> Vertragsprüfung</h1>
+    <p class="lead">Lade deinen Vertrag hoch, erhalte in Sekunden eine Zusammenfassung, Risiko-Hinweise und To-Dos. Wir bauen gerade – sag uns, was du brauchst.</p>
+  </header>
+
+  <main>
+    <section class="card pad">
+      <h2>Was dir der Agent abnimmt</h2>
+      <ul class="features">
+        <li><span class="dot"></span> Klausel-Risiken erkennen (z. B. Haftung, SLA, Kündigungsfristen)</li>
+        <li><span class="dot"></span> Executive Summary &amp; empfohlene Redlines</li>
+        <li><span class="dot"></span> Vergleich mit euren Standard-Templates</li>
+      </ul>
+    </section>
+
+    <section class="card pad" id="form-card">
+      <h2>Interesse? Nenne uns deine Anforderungen</h2>
+      <!-- Formspree: https://formspree.io/  – ersetze YOUR_FORM_ID -->
+      <form id="leadForm" action="https://formspree.io/f/myzbwqby" method="POST">
+        <div class="row">
+          <div>
+            <label for="name">Name</label>
+            <input id="name" name="name" placeholder="Max Mustermann" autocomplete="name" required />
+          </div>
+          <div>
+            <label for="email">E-Mail</label>
+            <input id="email" name="email" type="email" placeholder="max@firma.de" autocomplete="email" required />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="role">Rolle</label>
+            <select id="role" name="role">
+              <option>Gründer:in</option>
+              <option>Legal Counsel</option>
+              <option>Operations</option>
+              <option>Vertrieb</option>
+              <option>Sonstiges</option>
+            </select>
+          </div>
+          <div>
+            <label for="company">Firma (optional)</label>
+            <input id="company" name="company" placeholder="Firma GmbH" />
+          </div>
+        </div>
+
+        <label for="wishes">Welche Funktionen brauchst du?</label>
+        <textarea id="wishes" name="wishes" placeholder="z. B. DSGVO-Check, Klausel-Vergleich, Word-Export …"></textarea>
+
+        <!-- UTM & Kontext-Felder (gefüllt via JS) -->
+        <input type="hidden" name="utm_source" id="utm_source">
+        <input type="hidden" name="utm_medium" id="utm_medium">
+        <input type="hidden" name="utm_campaign" id="utm_campaign">
+        <input type="hidden" name="referrer" id="referrer">
+        <input type="hidden" name="page" id="page">
+
+        <label class="consent">
+          <input type="checkbox" id="consent" required />
+          <span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme und Auswertung gespeichert werden. Details in der <a href="/datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>.</span>
+        </label>
+
+        <button type="submit" class="btn" id="submitBtn">Absenden</button>
+        <p class="muted" id="formMsg"></p>
+      </form>
+      <p class="muted" style="margin-top:8px;">Mit Klick auf „Absenden“ stimmst du zu, dass wir dich ggf. per E-Mail kontaktieren.</p>
+    </section>
+  </main>
+
+  <footer>
+    <span class="tagline">💡 Beta-Interesse</span>
+    <div style="margin-top:10px;">
+      <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · Kontakt: <a href="mailto:team@yourdomain.com">team@yourdomain.com</a>
+    </div>
+  </footer>
+
+  <script>
+    // UTM/Referrer aufnehmen
+    (function captureAttribution(){
+      const params = new URLSearchParams(location.search);
+      const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ""; };
+      set('utm_source', params.get('utm_source'));
+      set('utm_medium', params.get('utm_medium'));
+      set('utm_campaign', params.get('utm_campaign'));
+      set('referrer', document.referrer);
+      set('page', location.pathname + location.search);
+    })();
+
+    // Custom Events mit Plausible
+    function track(eventName, props){
+      if (window.plausible) window.plausible(eventName, { props });
+    }
+
+    // CTA-Tracking Beispiel: Scroll zu Formular
+    document.addEventListener('click', (e) => {
+      const target = e.target.closest('[data-cta]');
+      if (target) track('cta_click', { id: target.dataset.cta });
+    });
+
+    // Formular submitten und Status anzeigen (ohne Reload)
+    const form = document.getElementById('leadForm');
+    const msg = document.getElementById('formMsg');
+    const btn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!document.getElementById('consent').checked) {
+        msg.textContent = 'Bitte Zustimmung zur Datenverarbeitung geben.'; msg.className = 'muted err'; return;
+      }
+      btn.disabled = true; msg.textContent = 'Sende …'; msg.className = 'muted';
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: new FormData(form)
+        });
+        if (res.ok) {
+          track('lead_submitted', { role: form.role.value || '' });
+          form.reset(); msg.textContent = 'Danke! Wir melden uns bald.'; msg.className = 'muted ok';
+        } else {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'Senden fehlgeschlagen.');
+        }
+      } catch (err) {
+        msg.textContent = 'Fehler beim Senden. Bitte später erneut versuchen.'; msg.className = 'muted err';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
