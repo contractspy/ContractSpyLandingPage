@@ -24,9 +24,15 @@
     ul.features { list-style:none; padding:0; margin:0; display:grid; gap:10px; }
     ul.features li { display:flex; gap:10px; align-items:flex-start; background:#0e1531; border:1px solid #23306a; border-radius:12px; padding:12px 14px; color:#d8defb; }
     .dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--acc); margin-top:6px; flex:0 0 10px; }
+
+    /* Formulardesign */
     form { display:grid; gap:12px; }
     label { font-size:14px; color:#c9d3ff; }
-    input, textarea, select { width:100%; background:#0e1531; color:#e8ecff; border:1px solid #2a376f; border-radius:12px; padding:12px 14px; outline:none; }
+    /* WICHTIG: Checkbox/Radio aus globalem Input-Style ausnehmen */
+    input:not([type="checkbox"]):not([type="radio"]), textarea, select {
+      width:100%; background:#0e1531; color:#e8ecff; border:1px solid #2a376f;
+      border-radius:12px; padding:12px 14px; outline:none;
+    }
     textarea { min-height:110px; resize:vertical; }
     .row { display:grid; gap:12px; grid-template-columns:1fr; }
     @media(min-width:600px){ .row{ grid-template-columns:1fr 1fr; } }
@@ -35,17 +41,42 @@
     .muted { color:var(--muted); font-size:13px; }
     .ok { color:#79ffa7; }
     .err { color:#ff8a8a; }
-    footer { padding:28px 20px 80px; text-align:center; color:#9fb0ff; font-size:14px; }
     a { color:#a7c8ff; }
     .consent { margin-top:8px; display:flex; gap:8px; align-items:flex-start; font-size:13px; color:#cbd5ff; }
     .consent input { width:auto; }
     .tagline { display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background:#0f1533; border:1px solid #28356e; color:#c9d3ff; }
+
+    /* Relevanz-Optionen hübsch */
+    fieldset.relevant { border: 1px solid #28356e; border-radius: 14px; padding: 14px; }
+    fieldset.relevant legend { padding: 0 .5rem; color: var(--text); font-weight: 600; letter-spacing: .2px; }
+    .relevant .grid { display: grid; gap: 10px; }
+    @media (min-width: 680px) { .relevant .grid { grid-template-columns: 1fr; } } /* einfach einstspaltig lassen – wirkt ruhiger */
+
+    .relevant .option {
+      display:flex; align-items:flex-start; gap:12px;
+      padding:10px 12px; border:1px solid #23306a; border-radius:12px; background:#0e1531;
+      transition: border-color .15s ease, background .15s ease, transform .05s ease;
+    }
+    .relevant .option:hover { border-color:#2d3b77; background:#10183a; }
+    .relevant .option:active { transform: translateY(1px); }
+    .relevant input[type="checkbox"] {
+      width:18px; height:18px; margin-top:2px; accent-color: var(--acc); outline:none;
+    }
+    .relevant input[type="checkbox"]:focus-visible {
+      box-shadow: 0 0 0 3px rgba(110,168,255,.35);
+      border-radius:4px;
+    }
+    .relevant .option span { color:#d8defb; line-height:1.35; font-size:16px; }
+
+    /* Launch-Opt-in Checkbox hübsch ausrichten */
+    .inline-check { display:flex; align-items:flex-start; gap:8px; }
+    .inline-check input[type="checkbox"] { width:auto; margin-top:3px; accent-color: var(--acc); }
   </style>
 </head>
 <body>
   <header>
     <span class="badge">EARLY ACCESS</span>
-    <h1>Legal Agent für <em>schnelle</em> Vertragsprüfung</h1>
+    <h1>Legal Agent für <em>schnelle</em> und <b>datenschutzkonforme</b> Vertragsprüfung</h1>
     <p class="lead">Lade deinen Vertrag hoch, erhalte in Sekunden eine Zusammenfassung, Risiko-Hinweise und To-Dos. Wir bauen gerade – sag uns, was du brauchst.</p>
   </header>
 
@@ -53,45 +84,90 @@
     <section class="card pad">
       <h2>Was dir der Agent abnimmt</h2>
       <ul class="features">
-        <li><span class="dot"></span> Klausel-Risiken erkennen (z. B. Haftung, SLA, Kündigungsfristen)</li>
-        <li><span class="dot"></span> Executive Summary &amp; empfohlene Redlines</li>
-        <li><span class="dot"></span> Vergleich mit euren Standard-Templates</li>
+        <li><span class="dot"></span> Automatisch KFZ-Versicherungen prüfen &amp; versteckte Klauseln erkennen (z. B. Selbstbeteiligung, Schadensregulierung, Kündigungsfristen)</li>
+        <li><span class="dot"></span> Mietverträge rechtlich prüfen (z. B. Nebenkosten, Nachzahlungen, Schönheitsreparaturen, Staffelmieten)</li>
+        <li><span class="dot"></span> Handy-, Internet- &amp; Stromverträge auf versteckte Kosten und Laufzeiten analysieren</li>
+        <li><span class="dot"></span> Lebens- &amp; Berufsunfähigkeitsversicherungen auf unfaire Bedingungen oder überhöhte Provisionen prüfen</li>
+        <li><span class="dot"></span> Kauf- und Leasingverträge für Autos rechtlich checken (z. B. Gewährleistung, Rücktrittsrechte, Finanzierung)</li>
+        <li><span class="dot"></span> Individuelles Risiko-Profil &amp; Empfehlungen: Worauf du bei neuen Verträgen achten solltest</li>
       </ul>
     </section>
 
     <section class="card pad" id="form-card">
       <h2>Interesse? Nenne uns deine Anforderungen</h2>
-      <!-- Formspree: https://formspree.io/  – ersetze YOUR_FORM_ID -->
+
       <form id="leadForm" action="https://formspree.io/f/myzbwqby" method="POST">
         <div class="row">
           <div>
-            <label for="name">Name</label>
-            <input id="name" name="name" placeholder="Max Mustermann" autocomplete="name" required />
+            <label for="name">Name (optional)</label>
+            <br></br>
+            <input id="name" name="name" placeholder="Max Mustermann" autocomplete="name" />
           </div>
           <div>
-            <label for="email">E-Mail</label>
-            <input id="email" name="email" type="email" placeholder="max@firma.de" autocomplete="email" required />
+            <label for="email">E-Mail (optional)</label>
+            <br></br>
+            <input id="email" name="email" type="email" placeholder="max@beispiel.de" autocomplete="email" />
           </div>
         </div>
+        
+
         <div class="row">
           <div>
-            <label for="role">Rolle</label>
-            <select id="role" name="role">
-              <option>Gründer:in</option>
-              <option>Legal Counsel</option>
-              <option>Operations</option>
-              <option>Vertrieb</option>
-              <option>Sonstiges</option>
-            </select>
+            <label for="age">Alter (freiwillig)</label>
+            <br></br>
+            <input id="age" name="age" type="number" min="16" max="120" placeholder="z. B. 29" />
+            
           </div>
           <div>
-            <label for="company">Firma (optional)</label>
-            <input id="company" name="company" placeholder="Firma GmbH" />
+            <label for="gender">Geschlecht (freiwillig)</label>
+            <br></br>
+            <select id="gender" name="gender">
+              <option value="">Keine Angabe</option>
+              <option value="male">Männlich</option>
+              <option value="female">Weiblich</option>
+              <option value="diverse">Divers / keine Zuordnung</option>
+            </select>
           </div>
         </div>
 
-        <label for="wishes">Welche Funktionen brauchst du?</label>
-        <textarea id="wishes" name="wishes" placeholder="z. B. DSGVO-Check, Klausel-Vergleich, Word-Export …"></textarea>
+        <fieldset class="relevant">
+          <legend>Was ist für dich besonders relevant? (Mehrfachauswahl möglich)</legend>
+          <div class="grid">
+            <label class="option">
+              <input type="checkbox" name="interests[]" value="kfz">
+              <span>KFZ-Versicherung prüfen &amp; vergleichen</span>
+            </label>
+            <label class="option">
+              <input type="checkbox" name="interests[]" value="mietvertrag">
+              <span>Mietvertrag &amp; Nebenkosten rechtlich prüfen</span>
+            </label>
+            <label class="option">
+              <input type="checkbox" name="interests[]" value="handy">
+              <span>Handy-, Internet- oder Stromverträge analysieren</span>
+            </label>
+            <label class="option">
+              <input type="checkbox" name="interests[]" value="lebensversicherung">
+              <span>Lebens- oder Berufsunfähigkeitsversicherung prüfen</span>
+            </label>
+            <label class="option">
+              <input type="checkbox" name="interests[]" value="autokauf">
+              <span>Autokauf- oder Leasingvertrag checken</span>
+            </label>
+            <label class="option">
+              <input type="checkbox" name="interests[]" value="beratung">
+              <span>Allgemeine Vertragsberatung &amp; Tipps</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <label for="feedback">Weitere Anregungen oder Wünsche (freiwillig)</label>
+        <textarea id="feedback" name="feedback" placeholder="z. B. Themenvorschläge, Feedback, Wünsche …"></textarea>
+
+        <!-- Launch-Opt-in -->
+        <label class="inline-check">
+          <input type="checkbox" id="notifyLaunch" name="notify_launch" value="yes" />
+          <span>Benachrichtige mich, wenn das Produkt online geht (E-Mail optional, wird dann nur hierfür genutzt)</span>
+        </label>
 
         <!-- UTM & Kontext-Felder (gefüllt via JS) -->
         <input type="hidden" name="utm_source" id="utm_source">
@@ -102,21 +178,20 @@
 
         <label class="consent">
           <input type="checkbox" id="consent" required />
-          <span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme und Auswertung gespeichert werden. Details in der <a href="/datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>.</span>
+          <span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme und Auswertung gespeichert werden.</span>
         </label>
 
         <button type="submit" class="btn" id="submitBtn">Absenden</button>
         <p class="muted" id="formMsg"></p>
       </form>
-      <p class="muted" style="margin-top:8px;">Mit Klick auf „Absenden“ stimmst du zu, dass wir dich ggf. per E-Mail kontaktieren.</p>
+
+      <p class="muted" style="margin-top:8px;">Mit Klick auf „Absenden“ stimmst du einer datenschutzkonformen Verarbeitung deiner Angaben zu. Die E-Mail ist freiwillig; sie wird nur genutzt, wenn du Kontakt oder eine Launch-Info wünschst.</p>
     </section>
   </main>
 
-  <footer>
-    <span class="tagline">💡 Beta-Interesse</span>
-    <div style="margin-top:10px;">
-      <a href="/impressum.html">Impressum</a> · <a href="/datenschutz.html">Datenschutz</a> · Kontakt: <a href="mailto:team@yourdomain.com">team@yourdomain.com</a>
-    </div>
+  <!-- Kleiner neutraler Footer ohne Unternehmensangaben -->
+  <footer style="padding:28px 20px 80px; text-align:center; color:#9fb0ff; font-size:14px;">
+    <span class="tagline">💡 Beta – wir bauen noch</span>
   </footer>
 
   <script>
@@ -136,10 +211,15 @@
       if (window.plausible) window.plausible(eventName, { props });
     }
 
-    // CTA-Tracking Beispiel: Scroll zu Formular
-    document.addEventListener('click', (e) => {
-      const target = e.target.closest('[data-cta]');
-      if (target) track('cta_click', { id: target.dataset.cta });
+    // Launch-Opt-in: wenn angehakt und keine E-Mail vorhanden, E-Mail anfordern (soft-required)
+    const emailInput = document.getElementById('email');
+    const notify = document.getElementById('notifyLaunch');
+    notify.addEventListener('change', () => {
+      if (notify.checked) {
+        emailInput.setAttribute('aria-required', 'true');
+      } else {
+        emailInput.removeAttribute('aria-required');
+      }
     });
 
     // Formular submitten und Status anzeigen (ohne Reload)
@@ -149,25 +229,46 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
       if (!document.getElementById('consent').checked) {
-        msg.textContent = 'Bitte Zustimmung zur Datenverarbeitung geben.'; msg.className = 'muted err'; return;
+        msg.textContent = 'Bitte Zustimmung zur Datenverarbeitung geben.';
+        msg.className = 'muted err';
+        return;
       }
+
+      // Soft-Validierung: Launch-Opt-in ohne E-Mail -> Hinweis
+      if (notify.checked && !emailInput.value.trim()) {
+        msg.textContent = 'Bitte E-Mail eintragen, damit wir dich beim Launch benachrichtigen können (oder Opt-in abwählen).';
+        msg.className = 'muted err';
+        emailInput.focus();
+        return;
+      }
+
       btn.disabled = true; msg.textContent = 'Sende …'; msg.className = 'muted';
+
       try {
         const res = await fetch(form.action, {
           method: 'POST',
           headers: { 'Accept': 'application/json' },
           body: new FormData(form)
         });
+
+        // Tracking: welche Interessen wurden gewählt?
+        const interests = Array.from(form.querySelectorAll('input[name="interests[]"]:checked')).map(i => i.value);
+        track('lead_attempt', { interests: interests.join(','), notify: notify.checked ? 'yes' : 'no' });
+
         if (res.ok) {
-          track('lead_submitted', { role: form.role.value || '' });
-          form.reset(); msg.textContent = 'Danke! Wir melden uns bald.'; msg.className = 'muted ok';
+          form.reset();
+          msg.textContent = 'Danke! Wir melden uns bald.';
+          msg.className = 'muted ok';
+          track('lead_submitted', { interests: interests.join(','), notify: notify.checked ? 'yes' : 'no' });
         } else {
           const data = await res.json().catch(() => ({}));
           throw new Error(data.error || 'Senden fehlgeschlagen.');
         }
       } catch (err) {
-        msg.textContent = 'Fehler beim Senden. Bitte später erneut versuchen.'; msg.className = 'muted err';
+        msg.textContent = 'Fehler beim Senden. Bitte später erneut versuchen.';
+        msg.className = 'muted err';
       } finally {
         btn.disabled = false;
       }
