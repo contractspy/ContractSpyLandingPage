@@ -3,276 +3,198 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Legal Agent – Verträge automatisch prüfen</title>
+  <title>ContractSpy – Verträge automatisch prüfen</title>
   <meta name="description" content="KI-gestützte Vertragsprüfung: Risiken erkennen, Zusammenfassungen erstellen, schneller entscheiden." />
-
-  <!-- Plausible (ersetzen: yourdomain.com) -->
-  <script defer data-domain="yourdomain.com" src="https://plausible.io/js/script.js"></script>
-
   <style>
-    :root { --bg:#0b1020; --card:#121833; --text:#e8ecff; --muted:#a6b0d9; --acc:#6ea8ff; }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; color:var(--text); background:radial-gradient(1200px 600px at 20% -10%, #1a2558 0, transparent 60%), var(--bg); }
-    header { padding:48px 20px 16px; text-align:center; }
-    .badge { display:inline-block; padding:6px 10px; border:1px solid #2b356b; border-radius:999px; color:#cdd6ff; font-size:13px; }
-    h1 { margin:14px auto 10px; font-size: clamp(28px, 4vw, 44px); line-height:1.1; max-width: 900px; }
-    p.lead { margin:0 auto; max-width: 760px; color:var(--muted); font-size: clamp(16px, 2vw, 18px); }
-    main { max-width: 980px; margin: 28px auto 64px; padding: 0 20px; display:grid; gap:20px; grid-template-columns: 1fr; }
-    @media(min-width: 980px){ main{ grid-template-columns: 1.2fr .8fr; } }
-    .card { background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid #24306a; border-radius:18px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
-    .card.pad { padding:22px; }
-    ul.features { list-style:none; padding:0; margin:0; display:grid; gap:10px; }
-    ul.features li { display:flex; gap:10px; align-items:flex-start; background:#0e1531; border:1px solid #23306a; border-radius:12px; padding:12px 14px; color:#d8defb; }
-    .dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--acc); margin-top:6px; flex:0 0 10px; }
-
-    /* Formulardesign */
-    form { display:grid; gap:12px; }
-    label { font-size:14px; color:#c9d3ff; }
-    /* WICHTIG: Checkbox/Radio aus globalem Input-Style ausnehmen */
-    input:not([type="checkbox"]):not([type="radio"]), textarea, select {
-      width:100%; background:#0e1531; color:#e8ecff; border:1px solid #2a376f;
-      border-radius:12px; padding:12px 14px; outline:none;
+    :root{
+      --brand:#11a777;
+      --brand-hover:#0f8f66;
+      --bg:#f6f8fb;
+      --surface:#fff;
+      --text:#111;
+      --muted:#5d6269;
+      --line:rgba(0,0,0,.1);
+      --radius:16px;
+      --shadow:0 6px 24px rgba(15,23,42,.06);
+      --max:940px;
     }
-    textarea { min-height:110px; resize:vertical; }
-    .row { display:grid; gap:12px; grid-template-columns:1fr; }
-    @media(min-width:600px){ .row{ grid-template-columns:1fr 1fr; } }
-    .btn { appearance:none; border:none; background:linear-gradient(180deg, #6ea8ff, #5d8cf0); color:#0b1020; font-weight:700; padding:13px 16px; border-radius:12px; cursor:pointer; }
-    .btn:disabled { opacity:.6; cursor:not-allowed; }
-    .muted { color:var(--muted); font-size:13px; }
-    .ok { color:#79ffa7; }
-    .err { color:#ff8a8a; }
-    a { color:#a7c8ff; }
-    .consent { margin-top:8px; display:flex; gap:8px; align-items:flex-start; font-size:13px; color:#cbd5ff; }
-    .consent input { width:auto; }
-    .tagline { display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background:#0f1533; border:1px solid #28356e; color:#c9d3ff; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
 
-    /* Relevanz-Optionen hübsch */
-    fieldset.relevant { border: 1px solid #28356e; border-radius: 14px; padding: 14px; }
-    fieldset.relevant legend { padding: 0 .5rem; color: var(--text); font-weight: 600; letter-spacing: .2px; }
-    .relevant .grid { display: grid; gap: 10px; }
-    @media (min-width: 680px) { .relevant .grid { grid-template-columns: 1fr; } } /* einfach einstspaltig lassen – wirkt ruhiger */
+    /* === Header === */
+    header{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--line)}
+    .head{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:14px 0;               /* padding ohne seitliche Gutter – die kommen über margin-inline weiter unten */
+      display:flex;align-items:center;gap:10px
+    }
+    .head img{width:40px;height:40px;border-radius:10px}
+    .head h1{margin:0;font-weight:800;font-size:22px;letter-spacing:-.01em}
 
-    .relevant .option {
-      display:flex; align-items:flex-start; gap:12px;
-      padding:10px 12px; border:1px solid #23306a; border-radius:12px; background:#0e1531;
-      transition: border-color .15s ease, background .15s ease, transform .05s ease;
+    /* === Hero === */
+    .hero{
+      max-width:var(--max);
+      margin:48px auto 0;           /* zentriert auf groß */
+      padding:0;                     /* Innenpadding lassen wir über Text regeln */
     }
-    .relevant .option:hover { border-color:#2d3b77; background:#10183a; }
-    .relevant .option:active { transform: translateY(1px); }
-    .relevant input[type="checkbox"] {
-      width:18px; height:18px; margin-top:2px; accent-color: var(--acc); outline:none;
-    }
-    .relevant input[type="checkbox"]:focus-visible {
-      box-shadow: 0 0 0 3px rgba(110,168,255,.35);
-      border-radius:4px;
-    }
-    .relevant .option span { color:#d8defb; line-height:1.35; font-size:16px; }
+    .badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)}
+    .hero h2{margin:10px 0;font-size:clamp(30px,4vw,46px);line-height:1.15;font-weight:800}
+    .hero p{margin:0 0 28px;color:var(--muted);font-size:17px;max-width:700px}
 
-    /* Launch-Opt-in Checkbox hübsch ausrichten */
-    .inline-check { display:flex; align-items:flex-start; gap:8px; }
-    .inline-check input[type="checkbox"] { width:auto; margin-top:3px; accent-color: var(--acc); }
+    /* === Cards === */
+    .card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      max-width:var(--max);
+      margin:0 auto 26px;           /* zentriert auf groß */
+      padding:32px 28px;
+    }
+    .card h3{margin:0 0 12px;font-size:22px}
+    .text{font-size:17px;line-height:1.6;color:#1a1a1a}
+
+    /* === GUTTERS auf schmalen Screens (fix) === */
+    /* geben Hero, Cards, Footer und Header-Inhalt echte Außenabstände */
+    @media (max-width: 1020px){
+      .hero,
+      .card,
+      footer,
+      .head{
+        margin-inline: clamp(14px, 5vw, 28px);
+      }
+    }
+
+    /* === Button === */
+    .btn{
+      display:inline-block;background:var(--brand);color:#fff;font-weight:700;border:none;border-radius:12px;padding:13px 20px;
+      cursor:pointer;text-decoration:none;transition:background .2s ease
+    }
+    .btn:hover{background:var(--brand-hover)}
+    .btn.block{width:100%;text-align:center}
+    @media(min-width:640px){.btn.block{width:auto}}
+
+    /* === Form === */
+    form{display:grid;gap:18px}
+    .row-2{display:grid;gap:14px;grid-template-columns:1fr}
+    @media(min-width:720px){.row-2{grid-template-columns:1fr 1fr}}
+
+    label{font-size:14px;font-weight:600}
+    input,select,textarea{
+      width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;font-size:15px;background:#fff;font-family:inherit
+    }
+    textarea{min-height:110px;resize:vertical}
+
+    fieldset{margin:0;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+    legend{font-weight:700;color:#1a1a1a}
+    .options{display:grid;gap:10px;grid-template-columns:1fr}
+    @media(min-width:640px){.options{grid-template-columns:1fr 1fr}}
+    .option{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .option input[type="checkbox"]{width:18px;height:18px;accent-color:var(--brand)}
+
+    .consent{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;color:var(--muted);font-size:14px}
+    .muted{color:var(--muted);font-size:14px}
+    .ok{color:var(--brand)}.err{color:#c94d4d}
+
+    footer{
+      max-width:var(--max);
+      margin:40px auto 0;           /* zentriert auf groß; Mobile-Gutter kommt über Media Query */
+      padding:20px 0;
+      border-top:1px solid var(--line);
+      text-align:center;color:var(--muted);font-size:13px;background:var(--surface);border-radius:12px 12px 0 0
+    }
   </style>
 </head>
 <body>
+
   <header>
-    <span class="badge">EARLY ACCESS</span>
-    <h1>Legal Agent für <em>schnelle</em> und <b>datenschutzkonforme</b> Vertragsprüfung</h1>
-    <p class="lead">Lade deinen Vertrag hoch, erhalte in Sekunden eine Zusammenfassung, Risiko-Hinweise und To-Dos. Wir bauen gerade – sag uns, was du brauchst.</p>
+    <div class="head">
+      <img src="./assets/contractspy-logo.svg" alt="ContractSpy Logo">
+      <h1>ContractSpy</h1>
+    </div>
   </header>
 
-  <main>
-    <section class="card pad">
-      <h2>Was dir der Agent abnimmt</h2>
-      <ul class="features">
-        <li><span class="dot"></span> Automatisch KFZ-Versicherungen prüfen &amp; versteckte Klauseln erkennen (z. B. Selbstbeteiligung, Schadensregulierung, Kündigungsfristen)</li>
-        <li><span class="dot"></span> Mietverträge rechtlich prüfen (z. B. Nebenkosten, Nachzahlungen, Schönheitsreparaturen, Staffelmieten)</li>
-        <li><span class="dot"></span> Handy-, Internet- &amp; Stromverträge auf versteckte Kosten und Laufzeiten analysieren</li>
-        <li><span class="dot"></span> Lebens- &amp; Berufsunfähigkeitsversicherungen auf unfaire Bedingungen oder überhöhte Provisionen prüfen</li>
-        <li><span class="dot"></span> Kauf- und Leasingverträge für Autos rechtlich checken (z. B. Gewährleistung, Rücktrittsrechte, Finanzierung)</li>
-        <li><span class="dot"></span> Individuelles Risiko-Profil &amp; Empfehlungen: Worauf du bei neuen Verträgen achten solltest</li>
-      </ul>
-    </section>
+  <section class="hero">
+    <span class="badge">Early Access</span>
+    <h2>Legal Agent für schnelle und datenschutzkonforme Vertragsprüfung</h2>
+    <p>Verträge hochladen, klar verstehen, Risiken erkennen – ContractSpy bringt juristische Präzision in verständlichen Klartext.</p>
+  </section>
 
-    <section class="card pad" id="form-card">
-      <h2>Interesse? Nenne uns deine Anforderungen</h2>
+  <section class="card">
+    <h3>Worum es geht</h3>
+    <p class="text">
+      ContractSpy analysiert Verträge automatisch und hebt die Punkte hervor, die wirklich zählen:
+      Kosten, Laufzeiten, Kündigungsfristen und rechtliche Risiken. Du erhältst kompakte
+      Zusammenfassungen und konkrete To-dos – schnell, verständlich und datenschutzkonform.
+    </p>
+    <a class="btn" href="https://contractspy.github.io/ContractSpyDemo/">Zur Demo</a>
+  </section>
 
-      <form id="leadForm" action="https://formspree.io/f/myzbwqby" method="POST">
-        <div class="row">
-          <div>
-            <label for="name">Name (optional)</label>
-            <br></br>
-            <input id="name" name="name" placeholder="Max Mustermann" autocomplete="name" />
-          </div>
-          <div>
-            <label for="email">E-Mail (optional)</label>
-            <br></br>
-            <input id="email" name="email" type="email" placeholder="max@beispiel.de" autocomplete="email" />
-          </div>
+  <section class="card">
+    <h3>Interesse? Nenne uns deine Anforderungen</h3>
+    <form id="leadForm" action="https://formspree.io/f/myzbwqby" method="POST" novalidate>
+      <div class="row-2">
+        <div>
+          <label for="name">Name (optional)</label>
+          <input id="name" name="name" placeholder="Max Mustermann" autocomplete="name">
         </div>
-        
-
-        <div class="row">
-          <div>
-            <label for="age">Alter (freiwillig)</label>
-            <br></br>
-            <input id="age" name="age" type="number" min="16" max="120" placeholder="z. B. 29" />
-            
-          </div>
-          <div>
-            <label for="gender">Geschlecht (freiwillig)</label>
-            <br></br>
-            <select id="gender" name="gender">
-              <option value="">Keine Angabe</option>
-              <option value="male">Männlich</option>
-              <option value="female">Weiblich</option>
-              <option value="diverse">Divers / keine Zuordnung</option>
-            </select>
-          </div>
+        <div>
+          <label for="email">E-Mail (optional)</label>
+          <input id="email" name="email" type="email" placeholder="max@beispiel.de" autocomplete="email">
         </div>
+      </div>
 
-        <fieldset class="relevant">
-          <legend>Was ist für dich besonders relevant? (Mehrfachauswahl möglich)</legend>
-          <div class="grid">
-            <label class="option">
-              <input type="checkbox" name="interests[]" value="kfz">
-              <span>KFZ-Versicherung prüfen &amp; vergleichen</span>
-            </label>
-            <label class="option">
-              <input type="checkbox" name="interests[]" value="mietvertrag">
-              <span>Mietvertrag &amp; Nebenkosten rechtlich prüfen</span>
-            </label>
-            <label class="option">
-              <input type="checkbox" name="interests[]" value="handy">
-              <span>Handy-, Internet- oder Stromverträge analysieren</span>
-            </label>
-            <label class="option">
-              <input type="checkbox" name="interests[]" value="lebensversicherung">
-              <span>Lebens- oder Berufsunfähigkeitsversicherung prüfen</span>
-            </label>
-            <label class="option">
-              <input type="checkbox" name="interests[]" value="autokauf">
-              <span>Autokauf- oder Leasingvertrag checken</span>
-            </label>
-            <label class="option">
-              <input type="checkbox" name="interests[]" value="beratung">
-              <span>Allgemeine Vertragsberatung &amp; Tipps</span>
-            </label>
-          </div>
-        </fieldset>
+      <fieldset>
+        <legend>Was ist für dich besonders relevant?</legend>
+        <div class="options">
+          <label class="option"><input type="checkbox" name="interests[]" value="kfz"> KFZ-Versicherung prüfen &amp; vergleichen</label>
+          <label class="option"><input type="checkbox" name="interests[]" value="mietvertrag"> Mietvertrag &amp; Nebenkosten prüfen</label>
+          <label class="option"><input type="checkbox" name="interests[]" value="handy"> Handy-, Internet- oder Stromverträge analysieren</label>
+          <label class="option"><input type="checkbox" name="interests[]" value="autokauf"> Autokauf- oder Leasingvertrag checken</label>
+        </div>
+      </fieldset>
 
-        <label for="feedback">Weitere Anregungen oder Wünsche (freiwillig)</label>
-        <textarea id="feedback" name="feedback" placeholder="z. B. Themenvorschläge, Feedback, Wünsche …"></textarea>
+      <div>
+        <label for="feedback">Weitere Anregungen (freiwillig)</label>
+        <textarea id="feedback" name="feedback" placeholder="z. B. Feedback oder Wünsche …"></textarea>
+      </div>
 
-        <!-- Launch-Opt-in -->
-        <label class="inline-check">
-          <input type="checkbox" id="notifyLaunch" name="notify_launch" value="yes" />
-          <span>Benachrichtige mich, wenn das Produkt online geht (E-Mail optional, wird dann nur hierfür genutzt)</span>
-        </label>
+      <label class="consent">
+        <input type="checkbox" id="consent" required>
+        <span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme gespeichert werden.</span>
+      </label>
 
-        <!-- UTM & Kontext-Felder (gefüllt via JS) -->
-        <input type="hidden" name="utm_source" id="utm_source">
-        <input type="hidden" name="utm_medium" id="utm_medium">
-        <input type="hidden" name="utm_campaign" id="utm_campaign">
-        <input type="hidden" name="referrer" id="referrer">
-        <input type="hidden" name="page" id="page">
+      <button type="submit" class="btn block" id="submitBtn">Absenden</button>
+      <p class="muted" id="formMsg"></p>
+    </form>
+  </section>
 
-        <label class="consent">
-          <input type="checkbox" id="consent" required />
-          <span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme und Auswertung gespeichert werden.</span>
-        </label>
-
-        <button type="submit" class="btn" id="submitBtn">Absenden</button>
-        <p class="muted" id="formMsg"></p>
-      </form>
-
-      <p class="muted" style="margin-top:8px;">Mit Klick auf „Absenden“ stimmst du einer datenschutzkonformen Verarbeitung deiner Angaben zu. Die E-Mail ist freiwillig; sie wird nur genutzt, wenn du Kontakt oder eine Launch-Info wünschst.</p>
-    </section>
-  </main>
-
-  <!-- Kleiner neutraler Footer ohne Unternehmensangaben -->
-  <footer style="padding:28px 20px 80px; text-align:center; color:#9fb0ff; font-size:14px;">
+  <footer>
     <span class="tagline">💡 Beta – wir bauen noch</span>
     <img src="https://hitscounter.dev/api/hit?url=https%3A%2F%2Fcontractspy.github.io%2FContractSpyLandingPage%2F&label=Contract+spy&icon=github&color=%23198754&message=&style=flat&tz=UTC">
   </footer>
 
   <script>
-    // UTM/Referrer aufnehmen
-    (function captureAttribution(){
-      const params = new URLSearchParams(location.search);
-      const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ""; };
-      set('utm_source', params.get('utm_source'));
-      set('utm_medium', params.get('utm_medium'));
-      set('utm_campaign', params.get('utm_campaign'));
-      set('referrer', document.referrer);
-      set('page', location.pathname + location.search);
-    })();
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Custom Events mit Plausible
-    function track(eventName, props){
-      if (window.plausible) window.plausible(eventName, { props });
-    }
-
-    // Launch-Opt-in: wenn angehakt und keine E-Mail vorhanden, E-Mail anfordern (soft-required)
-    const emailInput = document.getElementById('email');
-    const notify = document.getElementById('notifyLaunch');
-    notify.addEventListener('change', () => {
-      if (notify.checked) {
-        emailInput.setAttribute('aria-required', 'true');
-      } else {
-        emailInput.removeAttribute('aria-required');
-      }
-    });
-
-    // Formular submitten und Status anzeigen (ohne Reload)
     const form = document.getElementById('leadForm');
     const msg = document.getElementById('formMsg');
     const btn = document.getElementById('submitBtn');
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async e=>{
       e.preventDefault();
-
-      if (!document.getElementById('consent').checked) {
-        msg.textContent = 'Bitte Zustimmung zur Datenverarbeitung geben.';
-        msg.className = 'muted err';
-        return;
+      if(!document.getElementById('consent').checked){
+        msg.textContent='Bitte Zustimmung zur Datenverarbeitung geben.';
+        msg.className='muted err';return;
       }
-
-      // Soft-Validierung: Launch-Opt-in ohne E-Mail -> Hinweis
-      if (notify.checked && !emailInput.value.trim()) {
-        msg.textContent = 'Bitte E-Mail eintragen, damit wir dich beim Launch benachrichtigen können (oder Opt-in abwählen).';
-        msg.className = 'muted err';
-        emailInput.focus();
-        return;
-      }
-
-      btn.disabled = true; msg.textContent = 'Sende …'; msg.className = 'muted';
-
-      try {
-        const res = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          body: new FormData(form)
-        });
-
-        // Tracking: welche Interessen wurden gewählt?
-        const interests = Array.from(form.querySelectorAll('input[name="interests[]"]:checked')).map(i => i.value);
-        track('lead_attempt', { interests: interests.join(','), notify: notify.checked ? 'yes' : 'no' });
-
-        if (res.ok) {
-          form.reset();
-          msg.textContent = 'Danke! Wir melden uns bald.';
-          msg.className = 'muted ok';
-          track('lead_submitted', { interests: interests.join(','), notify: notify.checked ? 'yes' : 'no' });
-        } else {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || 'Senden fehlgeschlagen.');
-        }
-      } catch (err) {
-        msg.textContent = 'Fehler beim Senden. Bitte später erneut versuchen.';
-        msg.className = 'muted err';
-      } finally {
-        btn.disabled = false;
-      }
+      btn.disabled=true;msg.textContent='Sende …';msg.className='muted';
+      try{
+        const res=await fetch(form.action,{method:'POST',headers:{'Accept':'application/json'},body:new FormData(form)});
+        if(res.ok){form.reset();msg.textContent='Danke! Wir melden uns bald.';msg.className='muted ok';}
+        else{msg.textContent='Senden fehlgeschlagen. Bitte später erneut versuchen.';msg.className='muted err';}
+      }catch{msg.textContent='Fehler beim Senden.';msg.className='muted err';}
+      btn.disabled=false;
     });
   </script>
 </body>
