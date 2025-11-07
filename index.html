@@ -56,7 +56,7 @@
     .text{font-size:17px;line-height:1.6;color:#1a1a1a}
 
     /* === Video === */
-    .video-wrap{display:block}
+    .video-wrap{display:block;margin-bottom:20px}
     .video-wrap video{width:100%;height:auto;border-radius:12px;border:1px solid var(--line);box-shadow:var(--shadow)}
 
     /* === GUTTERS auf schmalen Screens === */
@@ -124,7 +124,7 @@
     <p>Verträge hochladen, klar verstehen, Risiken erkennen – ContractSpy bringt juristische Präzision in verständlichen Klartext.</p>
   </section>
 
-  <!-- Erster Kasten -> durch Video ersetzt -->
+  <!-- Erster Kasten: Video + Demo-Button -->
   <section class="card">
     <h3>Video: ContractSpy in 60 Sekunden</h3>
     <div class="video-wrap">
@@ -133,9 +133,10 @@
         Dein Browser unterstützt das Video-Tag nicht.
       </video>
     </div>
+    <a class="btn" href="https://contractspy.github.io/ContractSpyDemo/">Zur Demo</a>
   </section>
 
-  <!-- Formular-Kasten bleibt erhalten -->
+  <!-- Formular bleibt -->
   <section class="card">
     <h3>Interesse? Nenne uns deine Anforderungen</h3>
     <form id="leadForm" action="https://formspree.io/f/myzbwqby" method="POST" novalidate>
@@ -181,7 +182,6 @@
   </footer>
 
   <script>
-    // Guard, falls kein #year-Element existiert
     const yearEl = document.getElementById('year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
